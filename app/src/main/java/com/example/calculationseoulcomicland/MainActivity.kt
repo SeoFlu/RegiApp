@@ -3,6 +3,8 @@ package com.example.calculationseoulcomicland
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.example.calculationseoulcomicland.databinding.ActivityMainBinding
+import com.example.calculationseoulcomicland.ui.admin.StockFragment
+import com.example.calculationseoulcomicland.ui.admin.TotalFragment
 import com.example.calculationseoulcomicland.ui.user.CalculationFragment
 import com.example.calculationseoulcomicland.ui.user.HomeFragment
 import com.example.calculationseoulcomicland.ui.user.ProfileFragment

@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".ui.StockFragment">
+    tools:context=".ui.admin.StockFragment">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/stock_recycler_view"
