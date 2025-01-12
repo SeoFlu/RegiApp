@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/home"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:title="Home" />
+
+    <item
+        android:id="@+id/calculation"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:title="Calculation" />
+
+    <item
+        android:id="@+id/profile"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:title="profile" />
+
+    <item
+        android:id="@+id/stock"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:visible="false"
+        android:title="stock" />
+
+    <item
+        android:id="@+id/total"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:visible="false"
+        android:title="total" />
+
+</menu>
