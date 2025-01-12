@@ -52,6 +52,14 @@ class MainActivity : AppCompatActivity() {
                     supportFragmentManager.beginTransaction().replace(R.id.frameLayout, ProfileFragment()).commit()
                     true
                 }
+                R.id.stock -> {
+                    supportFragmentManager.beginTransaction().replace(R.id.frameLayout, StockFragment()).commit()
+                    true
+                }
+                R.id.total -> {
+                    supportFragmentManager.beginTransaction().replace(R.id.frameLayout, TotalFragment()).commit()
+                    true
+                }
                 else -> false
             }
         }
