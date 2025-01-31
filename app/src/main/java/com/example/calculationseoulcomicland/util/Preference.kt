@@ -7,6 +7,10 @@ class PreferenceUtil(context: Context) {
     private val prefs: SharedPreferences =
         context.getSharedPreferences("prefs_name", Context.MODE_PRIVATE)
 
+    fun getPreference() : SharedPreferences {
+        return prefs
+    }
+
     fun getString(key: String, defValue: String): String {
         return prefs.getString(key, defValue).toString()
     }
