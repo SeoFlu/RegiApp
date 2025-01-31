@@ -1,6 +1,9 @@
 package com.example.calculationseoulcomicland.util
 
+import android.net.Uri
+import com.example.calculationseoulcomicland.data.Profile
 import com.example.calculationseoulcomicland.data.StockItem
+import java.net.URI
 
 object DataUtil {
 
@@ -22,5 +25,25 @@ object DataUtil {
         }
 
         return arrStockItem
+    }
+
+    public fun StringToProfileItemList(string : String): ArrayList<Profile> {
+        var arrProfileItem : ArrayList<Profile> = arrayListOf<Profile>()
+
+        if(string.equals(""))
+            return arrProfileItem
+
+        if(string.contains("&")){
+            val tempStringArr = string.split("&")
+            for(tempString in tempStringArr){
+                var tempProfileItemArr = tempString.split("_")
+                arrProfileItem.add(Profile(tempProfileItemArr.get(0).toInt(),tempProfileItemArr.get(1),  Uri.parse(tempProfileItemArr.get(2))))
+            }
+        } else {
+            var tempProfileItemArr = string.split("_")
+            arrProfileItem.add(Profile(tempProfileItemArr.get(0).toInt(),tempProfileItemArr.get(1), Uri.parse(tempProfileItemArr.get(2))))
+        }
+
+        return arrProfileItem
     }
 }
