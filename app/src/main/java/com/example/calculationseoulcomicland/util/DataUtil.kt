@@ -7,7 +7,7 @@ import java.net.URI
 
 object DataUtil {
 
-    public fun StringToStockItemList(string : String): ArrayList<StockItem> {
+    fun StringToStockItemList(string : String): ArrayList<StockItem> {
         var arrStockItem : ArrayList<StockItem> = arrayListOf<StockItem>()
 
         if(string.equals(""))
@@ -27,7 +27,7 @@ object DataUtil {
         return arrStockItem
     }
 
-    public fun StringToProfileItemList(string : String): ArrayList<Profile> {
+    fun StringToProfileItemList(string : String): ArrayList<Profile> {
         var arrProfileItem : ArrayList<Profile> = arrayListOf<Profile>()
 
         if(string.equals(""))
@@ -45,5 +45,22 @@ object DataUtil {
         }
 
         return arrProfileItem
+    }
+
+    fun ProfileItemListToString(arr : ArrayList<Profile>) : String {
+        var arrProfileItem : ArrayList<Profile> = arr
+        var strProfiles : String = ""
+
+        if(arrProfileItem.size != 0){
+            for(profile in arrProfileItem){
+                val strInfo = profile.id.toString() + "_" + profile.name + "_" + profile.image
+                strProfiles += strInfo
+                if(arrProfileItem.last() == profile)
+                    break;
+                strProfiles += "&"
+            }
+        }
+
+        return strProfiles
     }
 }

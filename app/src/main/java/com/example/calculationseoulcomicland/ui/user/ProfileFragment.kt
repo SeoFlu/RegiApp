@@ -3,6 +3,7 @@ package com.example.calculationseoulcomicland.ui.user
 import android.app.AlertDialog
 import android.content.DialogInterface
 import android.os.Bundle
+import android.provider.ContactsContract.Data
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -51,6 +52,22 @@ class ProfileFragment : Fragment() {
     private fun initView(){
         profileAdapter = ProfileListAdapter(context!!)
         mBinding!!.profileList.layoutManager = LinearLayoutManager(context)
+        profileAdapter.setItemClickListener(object :
+            ProfileListAdapter.OnItemClickListener{
+            override fun onClick(v: View, pos: Int) {
+                when(v.id){
+                    R.id.profile_remove -> {
+                        Log.d(LOG_TAG, "onClick: remove $pos ")
+                        removeAuthor(pos)
+                    }
+                    R.id.profile_modify -> {
+                        Log.d(LOG_TAG, "onClick: modify $pos ")
+                        modifyAuthor(pos)
+                    }
+                }
+            }
+        }
+        )
         mBinding!!.profileList.adapter = profileAdapter
 
         mBinding!!.profileAddAuthor.setOnClickListener{
@@ -107,15 +124,27 @@ class ProfileFragment : Fragment() {
         return checkVal
     }
 
+    private fun removeAuthor(pos : Int){
+        Log.d(LOG_TAG, "removeAuthor() $pos")
+        val profilePrefString = MainActivity.preferences.getString(DefineValue.PREFERENCE_KEY_PROFILE_INFO_STRING, "")
+        val profileArr = DataUtil.StringToProfileItemList(profilePrefString)
+        if(pos < profileArr.size)
+            profileArr.removeAt(pos)
+
+        MainActivity.preferences.setString(DefineValue.PREFERENCE_KEY_PROFILE_INFO_STRING, DataUtil.ProfileItemListToString(profileArr))
+        resetListItem()
+    }
+
+    private fun modifyAuthor(pos : Int){
+        Log.d(LOG_TAG, "modifyAuthor() $pos")
+        Toast.makeText(context, "수정은 준비중 입니다. 삭제 후 새로 추가 해주세요.",Toast.LENGTH_SHORT).show()
+    }
+
     private fun initPreference(){
         MainActivity.preferences = PreferenceUtil(requireActivity())
     }
 
     private fun initData() {
-        // test
-        MainActivity.preferences.setString(
-            DefineValue.PREFERENCE_KEY_PROFILE_INFO_STRING, "")
-
         resetListItem()
     }
 

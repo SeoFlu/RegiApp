@@ -19,7 +19,7 @@ class ProfileListAdapter (private val context: Context) :
 
     private var LOG_TAG = "ProfileListAdapter."
 
-    private lateinit var itemClickListener : OnItemClickListener
+    private var itemClickListener : OnItemClickListener? = null
 
     private val differCallback = object : DiffUtil.ItemCallback<Profile>() {
         override fun areItemsTheSame(oldItem: Profile, newItem: Profile): Boolean {
@@ -52,7 +52,7 @@ class ProfileListAdapter (private val context: Context) :
         holder.bind(user)
     }
 
-    class ProfileViewHolder(view: View) : RecyclerView.ViewHolder(view){
+    inner class ProfileViewHolder(view: View) : RecyclerView.ViewHolder(view){
         private val txtName: TextView = itemView.findViewById(R.id.profile_name)
         private val btnModify: ImageButton = itemView.findViewById(R.id.profile_modify)
         private val btnRemove: ImageButton = itemView.findViewById(R.id.profile_remove)
@@ -62,13 +62,21 @@ class ProfileListAdapter (private val context: Context) :
             txtName.text = item.name;
             if(item.image != null)
                 imgProfile.setImageURI(item.image)
+
+            val pos = adapterPosition
+            btnRemove.setOnClickListener{
+                v -> itemClickListener?.onClick(v, pos)
+            }
+
+            btnModify.setOnClickListener{
+                v -> itemClickListener?.onClick(v, pos)
+            }
         }
     }
 
     fun setItemClickListener(onItemClickListener: OnItemClickListener) {
         this.itemClickListener = onItemClickListener
     }
-
 
     interface OnItemClickListener {
         fun onClick(v: View, pos: Int)
