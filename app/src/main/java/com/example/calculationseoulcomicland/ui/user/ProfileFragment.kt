@@ -69,26 +69,42 @@ class ProfileFragment : Fragment() {
             val authorName : String = mBinding?.profileAddView?.authorAddName?.text.toString()
 //            Log.d(LOG_TAG, "showAddAuthorView authorName : "+authorName)
             if(authorName.isNotEmpty() && !authorName.equals("") ){
-                val profileString = MainActivity.preferences.getString(DefineValue.PREFERENCE_KEY_PROFILE_INFO_STRING, "")
+                if( checkExistAuthor(authorName) ){
+                    Toast.makeText(context, "작가명이 중복 입니다.",Toast.LENGTH_SHORT).show()
+                } else {
+                    val profileString = MainActivity.preferences.getString(DefineValue.PREFERENCE_KEY_PROFILE_INFO_STRING, "")
 //                Log.d(LOG_TAG, "showAddAuthorView profileString : "+profileString)
-                if(profileString == ""){
-                    val profile = Profile(1, authorName, null)
-                    info = profile.profileToString(profile)
+                    if(profileString == ""){
+                        val profile = Profile(1, authorName, null)
+                        info = profile.profileToString(profile)
 //                    Log.d(LOG_TAG, "showAddAuthorView info 0 : "+info)
-                }
-                else {
-                    val profile = Profile(DataUtil.StringToProfileItemList(profileString).size+1, authorName, null)
-                    info = "$profileString&${profile.profileToString(profile)}"
+                    }
+                    else {
+                        val profile = Profile(DataUtil.StringToProfileItemList(profileString).size+1, authorName, null)
+                        info = "$profileString&${profile.profileToString(profile)}"
 //                    Log.d(LOG_TAG, "showAddAuthorView info 1 : "+info)
-                }
+                    }
 
-                MainActivity.preferences.setString(DefineValue.PREFERENCE_KEY_PROFILE_INFO_STRING, info)
-                resetListItem()
+                    MainActivity.preferences.setString(DefineValue.PREFERENCE_KEY_PROFILE_INFO_STRING, info)
+                    resetListItem()
+                }
             } else {
                 Toast.makeText(context, "작가명이 비어있습니다.",Toast.LENGTH_SHORT).show()
             }
         }
         mBinding?.profileAddView?.authorAddName?.setText("")
+    }
+
+    private fun checkExistAuthor(authorText : String) : Boolean{
+        var checkVal = false
+
+        val profilePrefString = MainActivity.preferences.getString(DefineValue.PREFERENCE_KEY_PROFILE_INFO_STRING, "")
+        val profileArr = DataUtil.StringToProfileItemList(profilePrefString)
+        for(profileInfo in profileArr){
+            if(profileInfo.name == authorText)
+                checkVal = true
+        }
+        return checkVal
     }
 
     private fun initPreference(){
