@@ -137,11 +137,12 @@ class ProfileFragment : Fragment() {
 
     private fun modifyAuthor(pos : Int){
         Log.d(LOG_TAG, "modifyAuthor() $pos")
-        Toast.makeText(context, "수정은 준비중 입니다. 삭제 후 새로 추가 해주세요.",Toast.LENGTH_SHORT).show()
+        Toast.makeText(context, "수정은 준비중 입니다. \n삭제 후 새로 추가 해주세요.",Toast.LENGTH_SHORT).show()
     }
 
     private fun initPreference(){
         MainActivity.preferences = PreferenceUtil(requireActivity())
+        MainActivity.preferences.setBoolean(DefineValue.PREFERENCE_KEY_FRAGMENT_ADMIN, false)
     }
 
     private fun initData() {

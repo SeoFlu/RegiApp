@@ -9,6 +9,7 @@ object DefineValue {
     const val PREFERENCE_KEY_FRAGMENT_TAG_PROFILE = "fragment_tag_profile"
     const val PREFERENCE_KEY_FRAGMENT_TAG_STOCK = "fragment_tag_stock"
     const val PREFERENCE_KEY_FRAGMENT_TAG_TOTAL = "fragment_tag_total"
+    const val PREFERENCE_KEY_FRAGMENT_ADMIN = "fragment_admin"
 
     // value
     const val PREFERENCE_KEY_STOCK_INFO_STRING = "stock_info_string"

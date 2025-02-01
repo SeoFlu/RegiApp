@@ -10,6 +10,7 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.calculationseoulcomicland.MainActivity
 import com.example.calculationseoulcomicland.MainActivity.Companion.preferences
 import com.example.calculationseoulcomicland.R
 import com.example.calculationseoulcomicland.data.DefineValue
@@ -61,6 +62,7 @@ class CalculationFragment : Fragment() {
 
     private fun initPreference(){
         Log.d("TAG", "initPreference: ")
+        MainActivity.preferences.setBoolean(DefineValue.PREFERENCE_KEY_FRAGMENT_ADMIN, false)
         preferences = PreferenceUtil(requireActivity())
     }
 
