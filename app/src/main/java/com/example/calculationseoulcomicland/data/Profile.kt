@@ -4,8 +4,6 @@ import android.net.Uri
 
 data class Profile (val id : Int, val name : String, val image : Uri?){
 
-
-
     fun profileToString(profile: Profile): String {
         val strProfileID = profile.id.toString()
         val strProfileName = profile.name

@@ -1,68 +1,83 @@
 package com.example.calculationseoulcomicland.ui.view
 
+import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import android.widget.ImageButton
+import android.widget.ImageView
+import androidx.recyclerview.widget.AsyncListDiffer
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.calculationseoulcomicland.R
 import com.example.calculationseoulcomicland.data.StockItem
 
-class StockListAdapter (val itemList: ArrayList<StockItem>) :
+class StockListAdapter (private val context: Context) :
     RecyclerView.Adapter<StockListAdapter.StockViewHolder>() {
 
-        private var itemArrList : ArrayList<StockItem> = ArrayList<StockItem>()
+    private var LOG_TAG = "StockListAdapter."
+
+    private var itemClickListener : OnItemClickListener? = null
+
+    private val differCallback = object : DiffUtil.ItemCallback<StockItem>() {
+        override fun areItemsTheSame(oldItem: StockItem, newItem: StockItem): Boolean {
+            return oldItem.id == newItem.id
+        }
+
+        override fun areContentsTheSame(oldItem: StockItem, newItem: StockItem): Boolean {
+            return oldItem == newItem
+        }
+    }
+
+    val differ = AsyncListDiffer(this, differCallback)
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): StockListAdapter.StockViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.stock_list_item_view, parent, false)
-        itemArrList.addAll(itemList)
+    ): StockViewHolder {
+        Log.d(LOG_TAG, "onCreateViewHolder: ")
+        val view = LayoutInflater.from(context).inflate(R.layout.stock_list_item_view, parent, false)
         return StockViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: StockListAdapter.StockViewHolder, position: Int) {
-        if(itemArrList.isNotEmpty()) {
-            holder.tv_title.setText(itemArrList[position].title)
-            holder.tv_count.setText(itemArrList[position].count.toString())
-            holder.tv_price.setText(itemArrList[position].price.toString())
-        }
-    }
-
     override fun getItemCount(): Int {
-        return itemArrList.count()
+        return differ.currentList.size
     }
 
-    fun updateList(itemList: ArrayList<StockItem>) {
-        itemArrList.clear()
-        itemArrList.addAll(itemList)
-        notifyDataSetChanged()
+    override fun onBindViewHolder(holder: StockViewHolder, position: Int) {
+        Log.d(LOG_TAG, "onBindViewHolder: ")
+        val user = differ.currentList[position]
+        holder.bind(user)
     }
 
-    fun removeLastedItem() {
-        if(itemArrList.isNotEmpty()){
-            itemArrList.removeAt(itemArrList.size - 1)
-        }
-        notifyDataSetChanged()
-    }
+    inner class StockViewHolder(view: View) : RecyclerView.ViewHolder(view){
+        private val txtTitle: EditText = itemView.findViewById(R.id.stock_name)
+        private val txtCount: EditText = itemView.findViewById(R.id.stock_count)
+        private val txtPrice: EditText = itemView.findViewById(R.id.stock_price)
+        private val btnRemove: ImageButton = itemView.findViewById(R.id.stock_remove)
+        private val imgStockItem: ImageView = itemView.findViewById(R.id.stock_img)
 
-    fun getListData():String {
-        var arrayListStr : String = ""
-        for(i : Int in 0.. itemArrList.size - 1 ){
-            arrayListStr += (itemArrList[i].title + "_")
-            arrayListStr += (itemArrList[i].count.toString() + "_")
-            arrayListStr += (itemArrList[i].price.toString() + "_")
-            if(i != itemArrList.size - 1){
-                arrayListStr += "&"
+        fun bind(item: StockItem){
+            txtTitle.setText(item.title)
+            txtCount.setText(item.count.toString())
+            txtPrice.setText(item.price.toString())
+            if(item.img != null)
+                imgStockItem.setImageURI(item.img)
+
+            val pos = adapterPosition
+            btnRemove.setOnClickListener{
+                    v -> itemClickListener?.onClick(v, pos)
             }
         }
-        return arrayListStr
     }
 
-    inner class StockViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
-        val tv_title = itemView.findViewById<EditText>(R.id.item_title)
-        val tv_count = itemView.findViewById<EditText>(R.id.item_count)
-        val tv_price = itemView.findViewById<EditText>(R.id.item_price)
+    fun setItemClickListener(onItemClickListener: OnItemClickListener) {
+        this.itemClickListener = onItemClickListener
+    }
+
+    interface OnItemClickListener {
+        fun onClick(v: View, pos: Int)
     }
 }
