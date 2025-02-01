@@ -3,7 +3,10 @@ package com.example.calculationseoulcomicland
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.children
+import androidx.core.view.get
 import com.example.calculationseoulcomicland.data.DefineValue
 import com.example.calculationseoulcomicland.databinding.ActivityMainBinding
 import com.example.calculationseoulcomicland.ui.admin.StockFragment
@@ -47,7 +50,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        preferences.getPreference().unregisterOnSharedPreferenceChangeListener(prefListener)
+        MainActivity.preferences.getPreference().unregisterOnSharedPreferenceChangeListener(prefListener)
     }
 
     fun setBottomNavigationView() {
@@ -110,6 +113,15 @@ class MainActivity : AppCompatActivity() {
                                 supportFragmentManager.beginTransaction().replace(R.id.main_container, TotalFragment()).commit()
                             }
                         }
+                    }
+                } else if (key == DefineValue.PREFERENCE_KEY_FRAGMENT_ADMIN){
+                    var adminValue = preferences.getBoolean(DefineValue.PREFERENCE_KEY_FRAGMENT_ADMIN, false)
+                    if(adminValue){
+                        mBinding.bottomNavigationBar.menu.get(3).setVisible(true)
+                        mBinding.bottomNavigationBar.menu.get(4).setVisible(true)
+                    } else {
+                        mBinding.bottomNavigationBar.menu.get(3).setVisible(false)
+                        mBinding.bottomNavigationBar.menu.get(4).setVisible(false)
                     }
                 }
             }
