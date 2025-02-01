@@ -1,79 +1,68 @@
 package com.example.calculationseoulcomicland.ui.view
 
+import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.recyclerview.widget.AsyncListDiffer
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.calculationseoulcomicland.R
 import com.example.calculationseoulcomicland.data.Profile
-import com.example.calculationseoulcomicland.databinding.ProfileListItemViewBinding
 
-class ProfileListAdapter (val itemList: ArrayList<Profile>) :
+class ProfileListAdapter (private val context: Context) :
     RecyclerView.Adapter<ProfileListAdapter.ProfileViewHolder>() {
 
     private var LOG_TAG = "ProfileListAdapter."
 
-    private var itemArrList : ArrayList<Profile> = ArrayList<Profile>()
     private lateinit var itemClickListener : OnItemClickListener
 
+    private val differCallback = object : DiffUtil.ItemCallback<Profile>() {
+        override fun areItemsTheSame(oldItem: Profile, newItem: Profile): Boolean {
+            return oldItem.id == newItem.id
+        }
+
+        override fun areContentsTheSame(oldItem: Profile, newItem: Profile): Boolean {
+            return oldItem == newItem
+        }
+    }
+
+    val differ = AsyncListDiffer(this, differCallback)
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): ProfileListAdapter.ProfileViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.profile_list_item_view, parent, false)
-        itemArrList.addAll(itemList)
-        return ProfileViewHolder(ProfileListItemViewBinding.bind(view))
-    }
-
-    override fun onBindViewHolder(holder: ProfileViewHolder, position: Int) {
-        holder.binding
-        if(itemArrList.isNotEmpty()) {
-            // set profile img
-            holder.binding.profileName.setText(itemArrList.get(position).name)
-            holder.binding.profileAdd.setOnClickListener{
-                Log.d(LOG_TAG, "onBindViewHolder: profileAdd")
-            }
-            holder.binding.profileRemove.setOnClickListener{
-                Log.d(LOG_TAG, "onBindViewHolder: profileRemove")
-            }
-            holder.binding.profileModify.setOnClickListener{
-                Log.d(LOG_TAG, "onBindViewHolder: profileModify")
-            }
-        }
+    ): ProfileViewHolder {
+        Log.d(LOG_TAG, "onCreateViewHolder: ")
+        val view = LayoutInflater.from(context).inflate(R.layout.profile_list_item_view, parent, false)
+        return ProfileViewHolder(view)
     }
 
     override fun getItemCount(): Int {
-        return itemArrList.count()
+        return differ.currentList.size
     }
 
-    fun updateList(itemList: ArrayList<Profile>) {
-        itemArrList.clear()
-        itemArrList.addAll(itemList)
-        notifyDataSetChanged()
+    override fun onBindViewHolder(holder: ProfileViewHolder, position: Int) {
+        Log.d(LOG_TAG, "onBindViewHolder: ")
+        val user = differ.currentList[position]
+        holder.bind(user)
     }
 
-    fun removeLastedItem() {
-        if(itemArrList.isNotEmpty()){
-            itemArrList.removeAt(itemArrList.size - 1)
+    class ProfileViewHolder(view: View) : RecyclerView.ViewHolder(view){
+        private val txtName: TextView = itemView.findViewById(R.id.profile_name)
+        private val btnModify: ImageButton = itemView.findViewById(R.id.profile_modify)
+        private val btnRemove: ImageButton = itemView.findViewById(R.id.profile_remove)
+        private val imgProfile: ImageView = itemView.findViewById(R.id.profile_image)
+
+        fun bind(item: Profile){
+            txtName.text = item.name;
+            if(item.image != null)
+                imgProfile.setImageURI(item.image)
         }
-        notifyDataSetChanged()
-    }
-
-    fun getListData():String {
-        var arrayListStr : String = ""
-        for(i : Int in 0.. itemArrList.size - 1 ){
-            arrayListStr += (itemArrList[i].name + "_")
-            arrayListStr += (itemArrList[i].image.toString())
-            if(i != itemArrList.size - 1){
-                arrayListStr += "&"
-            }
-        }
-        return arrayListStr
-    }
-
-    class ProfileViewHolder(val binding : ProfileListItemViewBinding) : RecyclerView.ViewHolder(binding.root){
     }
 
     fun setItemClickListener(onItemClickListener: OnItemClickListener) {

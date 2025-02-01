@@ -27,7 +27,8 @@ class ProfileFragment : Fragment() {
 
     private var mBinding: FragmentProfileBinding? = null
     private val binding get() = mBinding!!
-    private var arrItems = ArrayList<Profile>()
+    private lateinit var profileAdapter: ProfileListAdapter
+    private val arrItems = mutableListOf<Profile>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,12 +49,17 @@ class ProfileFragment : Fragment() {
     }
 
     private fun initView(){
-        mBinding?.profileAddAuthor?.setOnClickListener{
+        profileAdapter = ProfileListAdapter(context!!)
+        mBinding!!.profileList.layoutManager = LinearLayoutManager(context)
+        mBinding!!.profileList.adapter = profileAdapter
+
+        mBinding!!.profileAddAuthor.setOnClickListener{
             showAddAuthorView()
         }
     }
 
     private fun showAddAuthorView(){
+        var info : String
         mBinding?.profileAddView?.root?.visibility = View.VISIBLE
         mBinding?.profileAddView?.authorClose?.setOnClickListener{
             mBinding?.profileAddView?.root?.visibility = View.GONE
@@ -67,18 +73,17 @@ class ProfileFragment : Fragment() {
 //                Log.d(LOG_TAG, "showAddAuthorView profileString : "+profileString)
                 if(profileString == ""){
                     val profile = Profile(1, authorName, null)
-                    val info = profile.profileToString(profile)
+                    info = profile.profileToString(profile)
 //                    Log.d(LOG_TAG, "showAddAuthorView info 0 : "+info)
-                    MainActivity.preferences.setString(DefineValue.PREFERENCE_KEY_PROFILE_INFO_STRING, info)
-                    resetListItem(DataUtil.StringToProfileItemList(info))
                 }
                 else {
                     val profile = Profile(DataUtil.StringToProfileItemList(profileString).size+1, authorName, null)
-                    val info = "$profileString&${profile.profileToString(profile)}"
+                    info = "$profileString&${profile.profileToString(profile)}"
 //                    Log.d(LOG_TAG, "showAddAuthorView info 1 : "+info)
-                    MainActivity.preferences.setString(DefineValue.PREFERENCE_KEY_PROFILE_INFO_STRING, info)
-                    resetListItem(DataUtil.StringToProfileItemList(info))
                 }
+
+                MainActivity.preferences.setString(DefineValue.PREFERENCE_KEY_PROFILE_INFO_STRING, info)
+                resetListItem()
             } else {
                 Toast.makeText(context, "작가명이 비어있습니다.",Toast.LENGTH_SHORT).show()
             }
@@ -95,10 +100,7 @@ class ProfileFragment : Fragment() {
         MainActivity.preferences.setString(
             DefineValue.PREFERENCE_KEY_PROFILE_INFO_STRING, "")
 
-        arrItems = DataUtil.StringToProfileItemList(
-            MainActivity.preferences.getString(
-                DefineValue.PREFERENCE_KEY_PROFILE_INFO_STRING, ""))
-        resetListItem(arrItems)
+        resetListItem()
     }
 
     private fun showInputPasswordDialog(){
@@ -116,8 +118,6 @@ class ProfileFragment : Fragment() {
                 if(pw.equals("250112")){
                     dialog.dismiss()
                     mBinding!!.profileList.layoutManager = LinearLayoutManager(context)
-                    if(arrItems.isNotEmpty())
-                        mBinding!!.profileList.adapter = ProfileListAdapter(arrItems)
                 } else {
                     Toast.makeText(this.context, "비밀번호를 확인해주세요", Toast.LENGTH_SHORT).show()
                 }
@@ -126,12 +126,20 @@ class ProfileFragment : Fragment() {
         alertDialog.show()
     }
 
-    private fun resetListItem(arrInfo : ArrayList<Profile>){
-        mBinding!!.profileList.layoutManager = LinearLayoutManager(context)
-        if(arrInfo.isNotEmpty()){
-            mBinding!!.profileList.adapter = ProfileListAdapter(arrInfo)
-            mBinding!!.profileList.adapter?.notifyDataSetChanged()
+    private fun resetListItem(){
+
+        arrItems.apply {
+            arrItems.clear()
+
+            val profileList = DataUtil.StringToProfileItemList( MainActivity.preferences.getString(
+                DefineValue.PREFERENCE_KEY_PROFILE_INFO_STRING, ""))
+            for( item in profileList ){
+                add(item)
+            }
+            profileAdapter.differ.submitList(arrItems)
+
+            Log.d(LOG_TAG, "resetListItem arrItems : "+arrItems)
+            profileAdapter.notifyDataSetChanged()
         }
-        Log.d(LOG_TAG, "resetListItem: "+arrInfo)
     }
 }
