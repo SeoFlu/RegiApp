@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -53,9 +54,9 @@ class StockListAdapter (private val context: Context) :
     }
 
     inner class StockViewHolder(view: View) : RecyclerView.ViewHolder(view){
-        private val txtTitle: EditText = itemView.findViewById(R.id.stock_name)
-        private val txtCount: EditText = itemView.findViewById(R.id.stock_count)
-        private val txtPrice: EditText = itemView.findViewById(R.id.stock_price)
+        private val txtTitle: TextView = itemView.findViewById(R.id.stock_name)
+        private val txtCount: TextView = itemView.findViewById(R.id.stock_count)
+        private val txtPrice: TextView = itemView.findViewById(R.id.stock_price)
         private val btnRemove: ImageButton = itemView.findViewById(R.id.stock_remove)
         private val imgStockItem: ImageView = itemView.findViewById(R.id.stock_img)
 

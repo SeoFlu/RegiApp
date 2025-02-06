@@ -38,6 +38,7 @@ class StockFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        Log.d("TAG", "onCreateView: ")
         mBinding = FragmentStockBinding.inflate(inflater, container, false)
         initView(binding)
         initPreference()
@@ -98,16 +99,17 @@ class StockFragment : Fragment() {
             mBinding?.stockAddView?.root?.visibility = View.GONE
             val itemName : String = mBinding?.stockAddView?.stockAddItemTitle?.text.toString()
             val itemPrice : String = mBinding?.stockAddView?.stockAddItemPrice?.text.toString()
+            val itemCount : String = mBinding?.stockAddView?.stockAddItemCount?.text.toString()
             val itemAuthor : String = mBinding?.stockAddView?.stockAddItemAuthorSpinner?.selectedItem.toString()
 //            Log.d(LOG_TAG, "addStockListItem item : $itemName / $itemPrice / $itemAuthor")
 
             val stockString = preferences.getString(DefineValue.PREFERENCE_KEY_STOCK_INFO_STRING, "")
 
             if(stockString == ""){
-                val stock = StockItem(1, itemName, 0, itemPrice.toInt(), itemAuthor, null)
+                val stock = StockItem(1, itemName, itemCount.toInt(), itemPrice.toInt(), itemAuthor, null)
                 info = stock.stockToString(stock)
             } else {
-                val stock = StockItem(DataUtil.StringToStockItemList(stockString).size+1, itemName, 0, itemPrice.toInt(), itemAuthor, null)
+                val stock = StockItem(DataUtil.StringToStockItemList(stockString).size+1, itemName, itemCount.toInt(), itemPrice.toInt(), itemAuthor, null)
                 info = "$stockString&${stock.stockToString(stock)}"
             }
 
@@ -116,6 +118,7 @@ class StockFragment : Fragment() {
 
         }
         mBinding?.stockAddView?.stockAddItemTitle?.setText("")
+        mBinding?.stockAddView?.stockAddItemCount?.setText("")
         mBinding?.stockAddView?.stockAddItemPrice?.setText("")
     }
 
