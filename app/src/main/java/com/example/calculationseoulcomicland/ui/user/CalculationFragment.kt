@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.calculationseoulcomicland.MainActivity
 import com.example.calculationseoulcomicland.MainActivity.Companion.preferences
+import com.example.calculationseoulcomicland.R
 import com.example.calculationseoulcomicland.data.CalItem
 import com.example.calculationseoulcomicland.data.DefineValue
 import com.example.calculationseoulcomicland.data.StockItem
@@ -18,6 +19,7 @@ import com.example.calculationseoulcomicland.databinding.FragmentCalculationBind
 import com.example.calculationseoulcomicland.ui.view.CalListAdapter
 import com.example.calculationseoulcomicland.util.DataUtil
 import com.example.calculationseoulcomicland.util.PreferenceUtil
+import kotlin.math.log
 
 class CalculationFragment : Fragment() {
 
@@ -27,6 +29,7 @@ class CalculationFragment : Fragment() {
     private var mBinding: FragmentCalculationBinding? = null
     private val binding get() = mBinding!!
     private val arrItems = mutableListOf<StockItem>()
+    private val arrItemsCount = mutableListOf<Int>()
     private lateinit var calListAdapter: CalListAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,14 +57,58 @@ class CalculationFragment : Fragment() {
         calListAdapter.setItemClickListener(object :
             CalListAdapter.OnItemClickListener {
             override fun onClick(v: View, pos: Int) {
-                when (v.id) {
 
+            }
+
+            override fun onClick(v: View, pos: Int, count: Int) {
+                when (v.id) {
+                    R.id.cal_item_count_plus, R.id.cal_item_img -> {
+                        Log.d(LOG_TAG, "onClick: plus $pos ")
+                        addCountItem(pos, count)
+                        updateTotalPrice()
+                    }
+                    R.id.cal_item_count_minus -> {
+                        Log.d(LOG_TAG, "onClick: minus $pos ")
+                        minusCountItem(pos, count)
+                        updateTotalPrice()
+                    }
                 }
             }
         })
 
-        mBinding!!.calRecyclerView.adapter = calListAdapter
+        mBinding!!.calSuccess.setOnClickListener{
+            // 계산 확인
+        }
 
+        mBinding!!.calRecyclerView.adapter = calListAdapter
+    }
+
+    private fun updateTotalPrice(){
+        var totalPrice = 0
+        val arrCalItems = DataUtil.StringToStockItemList( preferences.getString(
+            DefineValue.PREFERENCE_KEY_STOCK_INFO_STRING, ""))
+
+        if(arrCalItems.isNotEmpty()){
+            for (i in 0..arrCalItems.size-1)
+            totalPrice += arrItemsCount.get(i) * arrCalItems.get(i).price
+        }
+        Log.d(LOG_TAG, "updateTotalPrice: $totalPrice")
+        mBinding!!.calTotal.text = totalPrice.toString()
+    }
+
+    private fun addCountItem(pos : Int, currentCount: Int) : Int{
+        Log.d(LOG_TAG, "addCountItem: ")
+        val count : Int = currentCount
+        arrItemsCount[pos] = currentCount
+
+        return count
+    }
+
+    private fun minusCountItem(pos : Int, currentCount: Int) : Int{
+        Log.d(LOG_TAG, "minusCountItem: ")
+        val count : Int = currentCount
+        arrItemsCount[pos] = currentCount
+        return count
     }
 
     private fun getCountItemFromWidth(): Int{
@@ -84,13 +131,17 @@ class CalculationFragment : Fragment() {
 
     private fun initPreference(){
         Log.d("TAG", "initPreference: ")
-        MainActivity.preferences.setBoolean(DefineValue.PREFERENCE_KEY_FRAGMENT_ADMIN, false)
+        preferences.setBoolean(DefineValue.PREFERENCE_KEY_FRAGMENT_ADMIN, false)
         preferences = PreferenceUtil(requireActivity())
     }
 
     private fun initData() {
         Log.d("TAG", "initData: ")
         resetListItem()
+
+        for(i in 0..mBinding!!.calRecyclerView.adapter!!.itemCount ){
+            arrItemsCount.add(0)
+        }
     }
 
     private fun resetListItem(){

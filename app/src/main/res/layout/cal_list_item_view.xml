@@ -64,7 +64,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:inputType="number"
-                android:hint="0"
+                android:text="0"
                 android:textSize="15sp"
                 android:layout_weight="2"
                 android:gravity="center"

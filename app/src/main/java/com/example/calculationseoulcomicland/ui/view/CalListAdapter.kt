@@ -63,7 +63,6 @@ class CalListAdapter (private val context: Context) :
 
         fun bind(item: StockItem){
             txtTitle.setText(item.title)
-//            txtCount.setText(item.count.toString())
             txtPrice.setText(item.price.toString())
 
             val pos = adapterPosition
@@ -75,10 +74,20 @@ class CalListAdapter (private val context: Context) :
             }
 
             btnCountPlus.setOnClickListener{
-                    v -> itemClickListener?.onClick(v, pos)
+                    v ->
+                var count = txtCount.text.toString().toInt()
+                count += 1
+                txtCount.text = count.toString()
+                itemClickListener?.onClick(v, pos, txtCount.text.toString().toInt())
             }
             btnCountMinus.setOnClickListener{
-                    v -> itemClickListener?.onClick(v, pos)
+                    v ->
+                var count = txtCount.text.toString().toInt()
+                if (count <= 0){
+                    count -= 1
+                    txtCount.text = count.toString()
+                    itemClickListener?.onClick(v, pos, txtCount.text.toString().toInt())
+                }
             }
         }
     }
@@ -89,5 +98,6 @@ class CalListAdapter (private val context: Context) :
 
     interface OnItemClickListener {
         fun onClick(v: View, pos: Int)
+        fun onClick(v: View, pos: Int, count: Int)
     }
 }
