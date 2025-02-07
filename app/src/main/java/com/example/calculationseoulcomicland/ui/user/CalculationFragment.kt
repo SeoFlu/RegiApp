@@ -77,7 +77,12 @@ class CalculationFragment : Fragment() {
         })
 
         mBinding!!.calSuccess.setOnClickListener{
-            // 계산 확인
+            Log.d(LOG_TAG, "onclick calSuccess")
+
+            for(i in 0..arrItemsCount.size-1)
+                arrItemsCount[i] = 0
+
+            mBinding!!.calTotal.text = "0"
         }
 
         mBinding!!.calRecyclerView.adapter = calListAdapter
