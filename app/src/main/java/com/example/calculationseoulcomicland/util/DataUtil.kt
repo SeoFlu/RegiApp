@@ -2,9 +2,9 @@ package com.example.calculationseoulcomicland.util
 
 import android.net.Uri
 import androidx.core.net.toUri
+import com.example.calculationseoulcomicland.data.CalItem
 import com.example.calculationseoulcomicland.data.Profile
 import com.example.calculationseoulcomicland.data.StockItem
-import java.net.URI
 
 object DataUtil {
 
@@ -69,6 +69,68 @@ object DataUtil {
 
         return strStockItems
     }
+
+    fun StringToCalItemList(string : String): ArrayList<CalItem> {
+        var arrCalItem : ArrayList<CalItem> = arrayListOf<CalItem>()
+
+        if(string.equals(""))
+            return arrCalItem
+
+        if(string.contains("&")){
+            val tempStringArr = string.split("&")
+            for(tempString in tempStringArr){
+                var tempCalItemArr = tempString.split("_")
+                arrCalItem.add(
+                    CalItem(
+                        tempCalItemArr.get(0).toInt(),
+                        tempCalItemArr.get(1),
+                        tempCalItemArr.get(2).toInt(),
+                        tempCalItemArr.get(3).toInt(),
+                        tempCalItemArr.get(4),
+                        tempCalItemArr.get(5).toUri()
+                    )
+                )
+            }
+        } else {
+            var tempCalItemArr = string.split("_")
+            arrCalItem.add(
+                CalItem(
+                    tempCalItemArr.get(0).toInt(),
+                    tempCalItemArr.get(1),
+                    tempCalItemArr.get(2).toInt(),
+                    tempCalItemArr.get(3).toInt(),
+                    tempCalItemArr.get(4),
+                    tempCalItemArr.get(5).toUri()
+                )
+            )
+        }
+
+        return arrCalItem
+    }
+
+    fun CalItemListToString(arrItem : ArrayList<CalItem>) : String {
+        var arrCalItems: ArrayList<CalItem> = arrItem
+        var strCalItems: String = ""
+
+        if (arrCalItems.size != 0) {
+            for (calItem in arrCalItems) {
+                val strInfo =
+                    calItem.id.toString() + "_" +
+                            calItem.title + "_" +
+                            calItem.count.toString() + "_" +
+                            calItem.price.toString() + "_" +
+                            calItem.img.toString()
+
+                strCalItems += strInfo
+                if (arrCalItems.last() == calItem)
+                    break;
+                strCalItems += "&"
+            }
+        }
+
+        return strCalItems
+    }
+
 
     fun StringToProfileItemList(string : String): ArrayList<Profile> {
         var arrProfileItem : ArrayList<Profile> = arrayListOf<Profile>()

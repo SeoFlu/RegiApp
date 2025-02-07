@@ -13,5 +13,6 @@ object DefineValue {
 
     // value
     const val PREFERENCE_KEY_STOCK_INFO_STRING = "stock_info_string"
+    const val PREFERENCE_KEY_CAL_ITEM_INFO_STRING = "cal_item_info_string"
     const val PREFERENCE_KEY_PROFILE_INFO_STRING = "profile_info_string"
 }

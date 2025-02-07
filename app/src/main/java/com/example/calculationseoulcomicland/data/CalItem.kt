@@ -2,7 +2,7 @@ package com.example.calculationseoulcomicland.data
 
 import android.net.Uri
 
-data class StockItem (
+data class CalItem (
     val id : Int,
     val title : String,
     val count : Int,
@@ -10,14 +10,14 @@ data class StockItem (
     val author : String,
     val img : Uri?){
 
-    fun stockToString(stock : StockItem): String {
-        val strStockID = stock.id.toString()
-        val strStockName = stock.title
-        val strStockCount = stock.count
-        val strStockPrice = stock.price
-        val strStockAuthor = stock.author
-        val strStockImgURI = stock.img.toString()
+    fun calToString(stock : CalItem): String {
+        val strCalID = stock.id.toString()
+        val strCalName = stock.title
+        val strCalCount = stock.count
+        val strCalPrice = stock.price
+        val strCalAuthor = stock.author
+        val strCalImgURI = stock.img.toString()
 
-        return strStockID + "_" + strStockName + "_" + strStockCount + "_" + strStockPrice + "_" + strStockAuthor + "_" + strStockImgURI
+        return strCalID + "_" + strCalName + "_" + strCalCount + "_" + strCalPrice + "_" + strCalImgURI
     }
 }
